@@ -1,0 +1,25 @@
+name: flow
+version: '1.0-SNAPSHOT'
+main: ru.femboypig.flow.Flow
+api-version: '1.19'
+authors: [femboypig]
+description: Communication. Refined.
+
+depend: [PlaceholderAPI]
+softdepend: [LuckPerms]
+
+commands:
+  msg:
+    description: Send a private message to a player
+    usage: /msg <player> <message>
+    aliases: [m, tell, w, whisper]
+  
+  reply:
+    description: Reply to the last private message
+    usage: /reply <message>
+    aliases: [r]
+  
+  flowreload:
+    description: Reload plugin configuration
+    usage: /flowreload
+    permission: flow.reload

@@ -1,0 +1,69 @@
+# Local chat radius (in blocks)
+local-chat-radius: 100
+
+# Global chat prefix
+global-chat-prefix: '!'
+
+# ===============================
+#     PLACEHOLDERS
+# ===============================
+# To see all available placeholders:
+# 1. /papi ecloud download <expansion> - download expansion
+# 2. /papi reload - reload PlaceholderAPI
+# 3. /papi list - list all placeholders
+# 
+# Main expansions:
+# - LuckPerms (/papi ecloud download luckperms)
+#   %luckperms_prefix% - prefix
+#   %luckperms_suffix% - suffix
+#   %luckperms_group% - group
+# 
+# - Player (/papi ecloud download player)
+#   %player_name% - nickname
+#   %player_ping% - ping
+#   %player_world% - world
+# 
+# You can use any placeholders in:
+# - Message formats
+# - Hover effects
+# - Private messages
+# ===============================
+
+# Message formats
+format:
+  local: '%luckperms_prefix%%player_name% &8→ &f%message%'
+  global: '&6[G] %luckperms_prefix%%player_name% &8→ &f%message%'
+  private:
+    outgoing: '&d→ &7%recipient%&8: &f%message%'
+    incoming: '&dFrom &7%sender%&8: &f%message%'
+
+# Hover effects
+hover:
+  enabled: true
+  format:
+    - '&8&m                              '
+    - ''
+    - '  &fPlayer: &7%player_name%'
+    - '  &fRank: &7%luckperms_prefix%'
+    - '  &fPing: &7%player_ping%ms'
+    - ''
+    - '  &fTime: &7%time%'
+    - ''
+    - '  &7Click to message'
+    - ''
+    - '&8&m                              '
+
+# Click actions
+click:
+  enabled: true
+  action: 'SUGGEST_COMMAND'
+  value: '/msg %player_name% '
+
+# Colors
+colors:
+  name: '&7'
+  arrow: '&8'
+  message: '&f'
+
+# Time format
+time-format: 'HH:mm:ss' 
