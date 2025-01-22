@@ -5,10 +5,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.femboypig.flow.chat.ChatManager;
 import ru.femboypig.flow.commands.*;
 import ru.femboypig.flow.listeners.ChatListener;
+import ru.femboypig.flow.utils.*;
 
 public final class Flow extends JavaPlugin {
     private static Flow instance;
     private ChatManager chatManager;
+    private AntiSpamManager antiSpamManager;
+    private ChatFilter chatFilter;
+    private IgnoreManager ignoreManager;
+    private EmojiManager emojiManager;
+    private MentionManager mentionManager;
 
     @Override
     public void onEnable() {
@@ -26,6 +32,11 @@ public final class Flow extends JavaPlugin {
         }
         
         // Initialize managers
+        this.antiSpamManager = new AntiSpamManager(this);
+        this.chatFilter = new ChatFilter(this);
+        this.ignoreManager = new IgnoreManager(this);
+        this.emojiManager = new EmojiManager(this);
+        this.mentionManager = new MentionManager(this);
         this.chatManager = new ChatManager(this);
         
         // Register listeners
@@ -35,6 +46,7 @@ public final class Flow extends JavaPlugin {
         getCommand("msg").setExecutor(new MessageCommand(this));
         getCommand("reply").setExecutor(new ReplyCommand(this));
         getCommand("flowreload").setExecutor(new FlowReloadCommand(this));
+        getCommand("ignore").setExecutor(new IgnoreCommand(this));
         
         getLogger().info("Flow has been successfully enabled!");
     }
@@ -51,5 +63,25 @@ public final class Flow extends JavaPlugin {
 
     public ChatManager getChatManager() {
         return chatManager;
+    }
+
+    public AntiSpamManager getAntiSpamManager() {
+        return antiSpamManager;
+    }
+
+    public ChatFilter getChatFilter() {
+        return chatFilter;
+    }
+
+    public IgnoreManager getIgnoreManager() {
+        return ignoreManager;
+    }
+
+    public EmojiManager getEmojiManager() {
+        return emojiManager;
+    }
+
+    public MentionManager getMentionManager() {
+        return mentionManager;
     }
 }

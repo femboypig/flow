@@ -59,6 +59,56 @@ click:
   action: 'SUGGEST_COMMAND'
   value: '/msg %player_name% '
 
+anti-spam:
+  enabled: true
+  cooldown: 2
+  max-messages: 5
+  time-window: 10
+
+chat-filter:
+  enabled: true
+  banned-words:
+    - "word1"
+    - "word2"
+
+emojis:
+  ':heart:': '❤'
+  ':star:': '⭐'
+  ':smile:': '☺'
+  ':sun:': '☀'
+  ':moon:': '☽'
+  ':music:': '♪'
+  ':flower:': '✿'
+  ':cloud:': '☁'
+  ':umbrella:': '☂'
+  ':snowman:': '☃'
+  ':comet:': '☄'
+  ':skull:': '☠'
+  ':radioactive:': '☢'
+  ':biohazard:': '☣'
+  ':peace:': '☮'
+  ':yinyang:': '☯'
+  ':cross:': '✞'
+  ':check:': '✓'
+  ':x:': '✗'
+  ':sparkles:': '✨'
+  ':crown:': '👑'
+  ':heart_eyes:': '😍'
+  ':thumbsup:': '👍'
+  ':fire:': '🔥'
+  ':rainbow:': '🌈'
+
+mentions:
+  format: '§e@%player%§r'
+  sound:
+    enabled: true
+    type: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+    volume: 1.0   
+    pitch: 1.0
+  title:
+    enabled: true
+    text: '§eMention from %player%'
+
 # Colors
 colors:
   name: '&7'

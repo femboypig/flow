@@ -1,6 +1,7 @@
 package ru.femboypig.flow.chat;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import ru.femboypig.flow.Flow;
 import ru.femboypig.flow.utils.MessageFormatter;
@@ -35,10 +36,37 @@ public class ChatManager {
     }
 
     public void handleChat(Player sender, String message) {
-        if (message.startsWith(globalChatPrefix)) {
-            sendGlobalMessage(sender, message.substring(globalChatPrefix.length()).trim());
+        // Check for spam
+        if (plugin.getAntiSpamManager().isSpamming(sender)) {
+            sender.sendMessage(ChatColor.RED + "Please wait before sending another message!");
+            return;
+        }
+
+        // Filter banned words
+        if (plugin.getChatFilter().containsBannedWords(message) && !sender.hasPermission("flow.bypass.filter")) {
+            sender.sendMessage(ChatColor.RED + "Your message contains banned words!");
+            return;
+        }
+        
+        // Process message
+        String processedMessage = message;
+        
+        // Apply filter
+        if (!sender.hasPermission("flow.bypass.filter")) {
+            processedMessage = plugin.getChatFilter().filterMessage(processedMessage);
+        }
+        
+        // Process emojis
+        processedMessage = plugin.getEmojiManager().replaceEmojis(processedMessage, sender);
+        
+        // Process mentions
+        processedMessage = plugin.getMentionManager().processMentions(processedMessage, sender);
+
+        // Determine message type and send
+        if (processedMessage.startsWith(globalChatPrefix)) {
+            sendGlobalMessage(sender, processedMessage.substring(globalChatPrefix.length()).trim());
         } else {
-            sendLocalMessage(sender, message);
+            sendLocalMessage(sender, processedMessage);
         }
     }
 
@@ -48,20 +76,31 @@ public class ChatManager {
         sender.getNearbyEntities(localChatRadius, localChatRadius, localChatRadius).stream()
                 .filter(entity -> entity instanceof Player)
                 .map(entity -> (Player) entity)
+                .filter(player -> !plugin.getIgnoreManager().isIgnored(sender, player))
                 .forEach(player -> player.spigot().sendMessage(component));
+        
         sender.spigot().sendMessage(component);
     }
 
     public void sendGlobalMessage(Player sender, String message) {
         TextComponent component = formatter.formatMessage(sender, message, globalFormat);
-        plugin.getServer().spigot().broadcast(component);
+        
+        plugin.getServer().getOnlinePlayers().stream()
+                .filter(player -> !plugin.getIgnoreManager().isIgnored(sender, player))
+                .forEach(player -> player.spigot().sendMessage(component));
     }
 
     public void sendPrivateMessage(Player sender, Player recipient, String message) {
-        TextComponent outgoingComponent = formatter.formatMessage(sender, message, 
-            privateOutgoingFormat.replace("%recipient%", recipient.getName()));
-        TextComponent incomingComponent = formatter.formatMessage(sender, message, 
-            privateIncomingFormat.replace("%sender%", sender.getName()));
+        // Check for ignore
+        if (plugin.getIgnoreManager().isIgnored(sender, recipient)) {
+            sender.sendMessage(ChatColor.RED + "This player is ignoring your messages!");
+            return;
+        }
+
+        TextComponent outgoingComponent = formatter.formatMessage(sender, message,
+                privateOutgoingFormat.replace("%recipient%", recipient.getName()));
+        TextComponent incomingComponent = formatter.formatMessage(sender, message,
+                privateIncomingFormat.replace("%sender%", sender.getName()));
 
         sender.spigot().sendMessage(outgoingComponent);
         recipient.spigot().sendMessage(incomingComponent);
